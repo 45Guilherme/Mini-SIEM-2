@@ -23,21 +23,22 @@ def monitorar():
     tentativas_por_ip = {}
 
     with open("server.log", "r", encoding="utf-8") as file:
-        file.seek(0, 2)
+        file.seek(0, 2)  # Vai para o final do arquivo
         while True:
             linha = file.readline()
+
             if linha == "":
-                time.sleep(2)
+                time.sleep(2)  # Espera novas linhas chegarem
             else:
-                ip = extrair_info(linha)
-                tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
-                print(f"{ip} → {tentativas_por_ip[ip]} tentativas")
+                ip = extrair_info(linha)  # Extrai IP da linha
 
-
-
+                if ip:  # Só continua se achou um IP
+                    tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
+                    print(f"{ip} → {tentativas_por_ip[ip]} tentativas")
+                    if tentativas_por_ip[ip] >= 5:
+                     print(f"ALERTA: {ip} ultrapassou o limite!")
+                
     
-    print("monitorando...")
-    time.sleep(2)
 
 def loop():
     contador = 0
