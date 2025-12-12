@@ -28,7 +28,8 @@ def monitorar():
             linha = file.readline()
 
             if linha == "":
-                time.sleep(2)  # Espera novas linhas chegarem
+                time.sleep(2)
+                continue 
             else:
                 ip = extrair_info(linha)  # Extrai IP da linha
 
@@ -37,8 +38,14 @@ def monitorar():
                     print(f"{ip} → {tentativas_por_ip[ip]} tentativas")
                     if tentativas_por_ip[ip] >= 5:
                      print(f"ALERTA: {ip} ultrapassou o limite!")
-                
-    
+                    nivel = verificar_ataque(tentativas_por_ip[ip])
+                    if nivel == "ALTO":
+                       alerta(ip, tentativas_por_ip[ip], nivel)
+                    elif nivel == "MEDIO":
+                       alerta(ip, tentativas_por_ip[ip], nivel)
+                    elif nivel == "INFO":
+                       print("Nível tranquilo")
+
 
 def loop():
     contador = 0
