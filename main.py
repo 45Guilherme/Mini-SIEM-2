@@ -2,6 +2,7 @@ from alertas import alerta
 from parser import extrair_info
 from detector import verificar_ataque
 import time
+from datetime import datetime
 
 def main():
 
@@ -71,8 +72,10 @@ def loop():
             contador = 0
 
 def registrar(ip, tentativas, nivel):
+    now = datetime.now()
+    timestamp = now.strftime("%Y-%m-%d %H:%M:%S") 
     with open("alerta.log", "a", encoding="utf-8") as file:
-        file.write("")
+        file.write(f"{timestamp} - ")
      
 
 if __name__ == "__main__":
