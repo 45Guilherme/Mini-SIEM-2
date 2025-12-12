@@ -46,7 +46,6 @@ def monitorar():
                     elif nivel == "INFO":
                        print("Nível tranquilo")
 
-
 def loop():
     contador = 0
     while True:
@@ -71,6 +70,10 @@ def loop():
             print("Reiniciando contador...\n")
             contador = 0
 
+def registrar(ip, tentativas, nivel):
+    with open("alerta.log", "a", encoding="utf-8") as file:
+        file.write("")
+     
 
 if __name__ == "__main__":
-    main()
+  main()
