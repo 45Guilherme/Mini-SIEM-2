@@ -3,18 +3,36 @@ from datetime import datetime
 def alerta(ip, tentativas, nivel):
     now = datetime.now()
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S") 
-    with open("alerta.log", "a", encoding="utf-8") as file:
-        file.write(f"{timestamp} - ATAQUE SUSPEITO do IP: {ip} Tentativas: {tentativas} Cor: {nivel}\n")
-    msg = f"{timestamp} - 🔔 ATAQUE SUSPEITO do IP: {ip} Tentativas: {tentativas} Cor: {nivel}\n"
-    if nivel == "ALTO":         
-       cor = "VERMELHO"
+    
+    # Pegamos o nome correto para log
+    nome_evento = tipo_ataque(nivel)
 
+    # Determinamos a cor
+    if nivel == "ALTO":         
+        cor = "VERMELHO"
     elif nivel == "MEDIO":
-         
-       cor = "AMARELO"
+        cor = "AMARELO"
     else:
-       cor = "ROXO"
+        cor = "ROXO"
+
+    msg = f"{timestamp} - {nome_evento} do IP: {ip} Tentativas: {tentativas} Cor: {nivel}\n"
+
+    # Salva no arquivo
+    with open("alerta.log", "a", encoding="utf-8") as file:
+        file.write(msg)
+    
+    # Print colorido no terminal
     print(colorir(msg, cor))
+
+def tipo_ataque(nivel):
+    mapa = {
+        "ALTO": "ATAQUE DETECTADO",
+        "MEDIO": "ATAQUE SUSPEITO",
+        "BAIXO": "INFORMATIVO",
+        "INFO": "INFORMATIVO"
+    }
+    return mapa.get(nivel, "INFORMATIVO")
+
 
 
 
