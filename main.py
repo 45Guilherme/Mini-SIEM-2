@@ -7,5 +7,11 @@ def main():
 
     ip = extrair_info(linha)
 
+    tentativas = 7
+
+    if verificar_ataque(tentativas):
+        alerta(ip, tentativas)
+
+
 if __name__ == "__main__":
     main()
