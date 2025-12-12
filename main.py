@@ -1,25 +1,67 @@
 from alertas import alerta
 from parser import extrair_info
 from detector import verificar_ataque
+import time
 
 def main():
 
     tentativas_por_ip = {}
 
-
-    log = ["Dec 12 10:02:12 server sshd[1111]: Failed password for root from 123.123.123.1 port 44222\n", 
-           "Nov 12 14:34:05 server sshd[1202]: Accepted password for user1 from 192.168.0.10 port 52345 ssh2\n", 
-           "Nov 12 14:36:50 server sshd[1205]: Failed password for root from 10.0.0.5 port 50231 ssh2\n"]
-    
-    for linha in log:
-        ip = extrair_info(linha)
-        if ip:
-           tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
-    
+   
+    with open("server.log", "r", encoding="utf-8") as file:
+        for linha in file:
+            ip = extrair_info(linha)
+            if ip:
+                tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
 
     for ip, total in tentativas_por_ip.items():
-        if verificar_ataque(total, limite=5):
-            alerta(ip, total)
+        nivel = verificar_ataque(total)
+        if nivel in ["ALTO", "MEDIO"]:
+            alerta(ip, total, nivel)
+
+def monitorar():
+    tentativas_por_ip = {}
+
+    with open("server.log", "r", encoding="utf-8") as file:
+        file.seek(0, 2)
+        while True:
+            linha = file.readline()
+            if linha == "":
+                time.sleep(2)
+            else:
+                ip = extrair_info(linha)
+                tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
+                print(f"{ip} → {tentativas_por_ip[ip]} tentativas")
+
+
+
+    
+    print("monitorando...")
+    time.sleep(2)
+
+def loop():
+    contador = 0
+    while True:
+        if contador >= 1 and contador <= 3:
+            contador += 1
+            time.sleep(1)
+            print("Baixo nível")
+        elif contador >= 4 and contador <= 6:
+            contador += 2
+            time.sleep(2)
+            print("Médio nível")
+        elif contador >= 7:
+           contador += 4
+           time.sleep(3)
+           print("Alto nível")
+        else:
+            print("Nível Seguro")
+            contador += 1
+            time.sleep(5)
+
+        if contador > 20:
+            print("Reiniciando contador...\n")
+            contador = 0
 
 
 if __name__ == "__main__":

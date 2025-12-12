@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def alerta(ip, tentativas, nivel):
     now = datetime.now()
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S") 
@@ -32,9 +33,6 @@ def tipo_ataque(nivel):
         "INFO": "INFORMATIVO"
     }
     return mapa.get(nivel, "INFORMATIVO")
-
-
-
 
 def colorir(texto, cor):
         cores = {
