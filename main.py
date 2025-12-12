@@ -7,7 +7,5 @@ def main():
 
     ip = extrair_info(linha)
 
-
-
 if __name__ == "__main__":
     main()

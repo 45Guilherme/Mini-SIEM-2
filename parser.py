@@ -1,4 +1,6 @@
 
 
 def extrair_info():
-    return
+    linha = []
+    return linha
+
