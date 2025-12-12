@@ -1,8 +1,11 @@
 from alertas import alerta
+from parser import extrair_info
+from detector import verificar_ataque
 
 def main():
-    ip = "192.168.0.50"   # define o IP antes
-    alerta(ip) 
+    linha = "Nov 12 14:33:01 server sshd[1201]: Failed password for root from 177.233.10.45 port 45821 ssh2"
+
+
 
 if __name__ == "__main__":
     main()
