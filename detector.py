@@ -12,6 +12,6 @@ def verificar_ataque(total):
 def contra_spam(ip, limite=60):
     agora = datetime.now()
     if ip not in tentativa_por_tempo_de_ip:
-        agora = tentativa_por_tempo_de_ip
+        tentativa_por_tempo_de_ip[ip] = agora
         return True
 
