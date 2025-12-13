@@ -1,6 +1,7 @@
 from alertas import alerta
 from parser import extrair_info
 from detector import verificar_ataque
+from classificar import classificar_ataque
 import time
 from datetime import datetime
 
@@ -75,7 +76,7 @@ def registrar(ip, tentativas, nivel):
     now = datetime.now()
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S") 
     with open("alerta.log", "a", encoding="utf-8") as file:
-        file.write(f"{timestamp} - ")
+        file.write(f"{timestamp} -{classificar_ataque(nivel)} {ip} fez {tentativas} tentativas, Nivel: {nivel}\n")
      
 
 if __name__ == "__main__":
