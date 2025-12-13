@@ -1,6 +1,6 @@
-from alertas import alerta
+from alertas import alerta, tipo_ataque, colorir
 from parser import extrair_info
-from detector import verificar_ataque
+from detector import verificar_ataque, contra_spam
 from classificar import classificar_ataque
 import time
 from datetime import datetime
@@ -38,15 +38,18 @@ def monitorar():
                 if ip:  # Só continua se achou um IP
                     tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
                     print(f"{ip} → {tentativas_por_ip[ip]} tentativas")
-                    if tentativas_por_ip[ip] >= 5:
-                     print(f"ALERTA: {ip} ultrapassou o limite!")
                     nivel = verificar_ataque(tentativas_por_ip[ip])
                     if nivel == "ALTO":
-                       alerta(ip, tentativas_por_ip[ip], nivel)
+                       if contra_spam(ip):
+                          alerta(ip, tentativas_por_ip[ip], nivel)
+                          registrar(ip, tentativas_por_ip[ip], nivel)
                     elif nivel == "MEDIO":
-                       alerta(ip, tentativas_por_ip[ip], nivel)
+                       if contra_spam(ip):
+                         alerta(ip, tentativas_por_ip[ip], nivel)
+                         registrar(ip, tentativas_por_ip[ip], nivel)
                     elif nivel == "INFO":
                        print("Nível tranquilo")
+
 
 def loop():
     contador = 0
@@ -76,7 +79,7 @@ def registrar(ip, tentativas, nivel):
     now = datetime.now()
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S") 
     with open("alerta.log", "a", encoding="utf-8") as file:
-        file.write(f"{timestamp} -{classificar_ataque(nivel)} {ip} fez {tentativas} tentativas, Nivel: {nivel}\n")
+        file.write(f"{timestamp} -{tipo_ataque(nivel)} - {classificar_ataque(nivel)} {ip} fez {tentativas} tentativas, Nivel: {nivel}\n")
      
 
 if __name__ == "__main__":

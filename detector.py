@@ -14,4 +14,15 @@ def contra_spam(ip, limite=60):
     if ip not in tentativa_por_tempo_de_ip:
         tentativa_por_tempo_de_ip[ip] = agora
         return True
+    
+       
+    ultimo_tempo = tentativa_por_tempo_de_ip[ip]
+    diferenca = (agora - ultimo_tempo).total_seconds()
+
+    if diferenca <= limite:
+        return False
+    else:
+        tentativa_por_tempo_de_ip[ip] = agora
+        return True
+
 
