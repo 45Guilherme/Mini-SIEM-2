@@ -23,32 +23,39 @@ def main():
 
 def monitorar():
     tentativas_por_ip = {}
+    try:
+        with open("server.log", "r", encoding="utf-8") as file:
+            file.seek(0, 2)  # Vai para o final do arquivo
+            while True:
+                linha = file.readline()
+                
 
-    with open("server.log", "r", encoding="utf-8") as file:
-        file.seek(0, 2)  # Vai para o final do arquivo
-        while True:
-            linha = file.readline()
+                if linha == "":
+                    time.sleep(2)
+                    continue 
+                else:
+                    ip = extrair_info(linha)  # Extrai IP da linha
 
-            if linha == "":
-                time.sleep(2)
-                continue 
-            else:
-                ip = extrair_info(linha)  # Extrai IP da linha
+                    if ip:  # Só continua se achou um IP
+                        tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
+                        print(f"{ip} → {tentativas_por_ip[ip]} tentativas")
+                        nivel = verificar_ataque(tentativas_por_ip[ip])
+                        if nivel == "ALTO":
+                            if contra_spam(ip):
+                                alerta(ip, tentativas_por_ip[ip], nivel)
+                                registrar(ip, tentativas_por_ip[ip], nivel)
+                                print(colorir(f"{ip} → {tentativas_por_ip[ip]} tentativas - {tipo_ataque(nivel)}", "VERMELHO"))
+                        elif nivel == "MEDIO":
+                            if contra_spam(ip):
+                                alerta(ip, tentativas_por_ip[ip], nivel)
+                                registrar(ip, tentativas_por_ip[ip], nivel)
+                                print(colorir(f"{ip} → {tentativas_por_ip[ip]} tentativas - {tipo_ataque(nivel)}", "AMARELO"))
+                        elif nivel == "INFO":
+                            print(colorir("Nível tranquilo", "CIANO"))
+    except KeyboardInterrupt:
+        print("\nMonitoramento interrompido pelo usuário.")
 
-                if ip:  # Só continua se achou um IP
-                    tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
-                    print(f"{ip} → {tentativas_por_ip[ip]} tentativas")
-                    nivel = verificar_ataque(tentativas_por_ip[ip])
-                    if nivel == "ALTO":
-                       if contra_spam(ip):
-                          alerta(ip, tentativas_por_ip[ip], nivel)
-                          registrar(ip, tentativas_por_ip[ip], nivel)
-                    elif nivel == "MEDIO":
-                       if contra_spam(ip):
-                         alerta(ip, tentativas_por_ip[ip], nivel)
-                         registrar(ip, tentativas_por_ip[ip], nivel)
-                    elif nivel == "INFO":
-                       print("Nível tranquilo")
+
 
 
 def loop():
@@ -83,4 +90,4 @@ def registrar(ip, tentativas, nivel):
      
 
 if __name__ == "__main__":
-  main()
+  monitorar()
