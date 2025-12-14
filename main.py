@@ -5,6 +5,7 @@ from classificar import classificar_ataque
 import time
 from datetime import datetime
 import json
+import os
 
 
 def main():
@@ -44,19 +45,21 @@ def monitorar():
                         tentativas_por_ip[ip] = tentativas_por_ip.get(ip, 0) + 1
                         print(f"{ip} → {tentativas_por_ip[ip]} tentativas")
                         nivel = verificar_ataque(tentativas_por_ip[ip])
+                        alerta_atual = {"timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"ip": ip, "tentativas": tentativas_por_ip[ip],"nivel": nivel, "tipo": tipo_ataque(nivel)}
                         if nivel == "ALTO":
                             if contra_spam(ip):
                                 alerta(ip, tentativas_por_ip[ip], nivel)
                                 registrar(ip, tentativas_por_ip[ip], nivel)
                                 print(colorir(f"{ip} → {tentativas_por_ip[ip]} tentativas - {tipo_ataque(nivel)}", "VERMELHO"))
+                                salvar_csv(alerta_atual)
                         elif nivel == "MEDIO":
                             if contra_spam(ip):
                                 alerta(ip, tentativas_por_ip[ip], nivel)
                                 registrar(ip, tentativas_por_ip[ip], nivel)
                                 print(colorir(f"{ip} → {tentativas_por_ip[ip]} tentativas - {tipo_ataque(nivel)}", "AMARELO"))
+                                salvar_csv(alerta_atual)
                         elif nivel == "INFO":
                             print(colorir("Nível tranquilo", "CIANO"))
-                        alerta_atual = {"timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"ip": ip, "tentativas": tentativas_por_ip[ip],"nivel": nivel, "tipo": tipo_ataque(nivel)}
                         alertas.append(alerta_atual)
                         salvar_alertas_json(alertas)
                         print(f"{len(alertas)} alertas salvos em alertas.json")                  
@@ -65,7 +68,21 @@ def monitorar():
 
 def salvar_alertas_json(alertas, arquivo="alertas.json"):
     with open(arquivo, "w", encoding="utf-8") as f:
-        json.dump(alertas, f, indent=4) 
+        json.dump(alertas, f, indent=4)
+
+def salvar_csv(alerta):
+       csv_existe = os.path.exists("server.csv")
+       with open("server.csv", "a", encoding="utf-8") as file:
+              if not csv_existe:
+                  file.write(f"timestamp,ip,tentativas,nivel,tipo\n")
+              file.write(
+            f"{alerta['timestamp']},"
+            f"{alerta['ip']},"
+            f"{alerta['tentativas']},"
+            f"{alerta['nivel']},"
+            f"{alerta['tipo']}\n"
+        )
+
 
 
 def loop():
