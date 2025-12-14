@@ -57,11 +57,15 @@ def monitorar():
                         elif nivel == "INFO":
                             print(colorir("Nível tranquilo", "CIANO"))
                         alerta_atual = {"timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"ip": ip, "tentativas": tentativas_por_ip[ip],"nivel": nivel, "tipo": tipo_ataque(nivel)}
-                        alertas.append(alerta_atual)                        
+                        alertas.append(alerta_atual)
+                        salvar_alertas_json(alertas)
+                        print(f"{len(alertas)} alertas salvos em alertas.json")                  
     except KeyboardInterrupt:
         print("\nMonitoramento interrompido pelo usuário.")
 
-
+def salvar_alertas_json(alertas, arquivo="alertas.json"):
+    with open(arquivo, "w", encoding="utf-8") as f:
+        json.dump(alertas, f, indent=4) 
 
 
 def loop():
