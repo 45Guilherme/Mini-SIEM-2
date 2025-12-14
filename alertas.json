@@ -1,0 +1,44 @@
+[
+    {
+        "timestamp": "2025-12-14 16:41:01",
+        "ip": "123.123.123.1",
+        "tentativas": 1,
+        "nivel": "INFO",
+        "tipo": "INFORMATIVO"
+    },
+    {
+        "timestamp": "2025-12-14 16:41:01",
+        "ip": "192.168.0.10",
+        "tentativas": 1,
+        "nivel": "INFO",
+        "tipo": "INFORMATIVO"
+    },
+    {
+        "timestamp": "2025-12-14 16:41:01",
+        "ip": "10.0.0.5",
+        "tentativas": 1,
+        "nivel": "INFO",
+        "tipo": "INFORMATIVO"
+    },
+    {
+        "timestamp": "2025-12-14 16:41:01",
+        "ip": "10.0.0.5",
+        "tentativas": 2,
+        "nivel": "INFO",
+        "tipo": "INFORMATIVO"
+    },
+    {
+        "timestamp": "2025-12-14 16:41:01",
+        "ip": "10.0.0.5",
+        "tentativas": 3,
+        "nivel": "MEDIO",
+        "tipo": "ATAQUE SUSPEITO"
+    },
+    {
+        "timestamp": "2025-12-14 16:41:01",
+        "ip": "10.0.0.5",
+        "tentativas": 4,
+        "nivel": "MEDIO",
+        "tipo": "ATAQUE SUSPEITO"
+    }
+]
