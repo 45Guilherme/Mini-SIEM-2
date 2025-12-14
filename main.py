@@ -4,6 +4,8 @@ from detector import verificar_ataque, contra_spam
 from classificar import classificar_ataque
 import time
 from datetime import datetime
+import json
+
 
 def main():
 
@@ -23,6 +25,8 @@ def main():
 
 def monitorar():
     tentativas_por_ip = {}
+    alertas = []
+
     try:
         with open("server.log", "r", encoding="utf-8") as file:
             file.seek(0, 2)  # Vai para o final do arquivo
@@ -52,6 +56,8 @@ def monitorar():
                                 print(colorir(f"{ip} → {tentativas_por_ip[ip]} tentativas - {tipo_ataque(nivel)}", "AMARELO"))
                         elif nivel == "INFO":
                             print(colorir("Nível tranquilo", "CIANO"))
+                        alerta_atual = {"timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"ip": ip, "tentativas": tentativas_por_ip[ip],"nivel": nivel, "tipo": tipo_ataque(nivel)}
+                        alertas.append(alerta_atual)                        
     except KeyboardInterrupt:
         print("\nMonitoramento interrompido pelo usuário.")
 
